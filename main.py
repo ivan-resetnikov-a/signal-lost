@@ -21,7 +21,7 @@ class Game :
 
 
 	def update (self) :
-		self.player.update(self.timeMult)
+		self.player.update(self.timeMult, self.colliders)
 
 		[enermy.update(self.timeMult) for enermy in self.enermies]
 
@@ -29,7 +29,9 @@ class Game :
 	def render (self) :
 		self.frame.fill((0, 0, 0))
 		################
-		[enermy.render(self.frame, self.player) for enermy in self.enermies]
+		[enermy.render(self.frame, self.player, self.colliders) for enermy in self.enermies]
+
+		[obj.render(self.frame) for obj in self.objects]
 
 		self.player.render(self.frame)
 		################
@@ -51,10 +53,28 @@ class Game :
 			self.render()
 
 
+	def loadLevel (self) :
+		print(f'=== LOADING LEVEL "{self.player.level}" ===')
+		content = core.loadFromJSON(f'data/signal_lost/world/{self.player.level}.json')
+		print('[Y] Reading from file')
+
+		self.colliders, self.objects = [], []
+
+		try : rot = obj['rot']
+		except : rot = 0
+		[self.objects.append(core.Object(obj['name'], obj['pos'], rot)) for obj in content['objects']]
+		print('[Y] Loading objects')
+
+		# load colliders
+		[self.colliders.append(tuple(collider)) for collider in content['colliders']]
+
+
 	def onStart (self) :
 		self.player = core.Player()
 
 		self.enermies = [core.Enermy()]
+
+		self.loadLevel()
 
 
 

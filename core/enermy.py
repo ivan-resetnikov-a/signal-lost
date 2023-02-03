@@ -13,10 +13,8 @@ class Enermy :
 		pass
 
 
-	def render (self, frame, player) :
+	def render (self, frame, player, colliders) :
 		pg.draw.circle(frame, (255, 0, 0), self.pos, 3)
-
-		pg.draw.rect(frame, (0, 0, 255), (50, 90, 20, 20))
 
 		deg = atan2(self.pos[1] - player.pos[1], self.pos[0] - player.pos[0])
 
@@ -24,7 +22,7 @@ class Enermy :
 		distance = 0
 		for i in range(round(100/6)) :
 			distance += 6
-			for collider in [(50, 90, 20, 20)] :
+			for collider in colliders :
 				if pg.Rect(((self.pos[0]-3)-(cos(deg) * distance), (self.pos[1]-3) - (sin(deg) * distance), 6, 6)).colliderect(collider) :
 					color = (0, 255, 0)
 					break
